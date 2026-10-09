@@ -17,7 +17,7 @@ RUN deno --version
 RUN git clone --depth 1 https://github.com/Brainicism/bgutil-ytdlp-pot-provider.git /opt/bgutil
 
 # Pre-warm deno's npm cache so the first real token request doesn't time out.
-RUN cd /opt/bgutil/server && deno run --allow-all src/generate_once.ts --version
+RUN cd /opt/bgutil/server && deno install && deno run --allow-all src/generate_once.ts --version
 
 WORKDIR /app
 COPY requirements.txt .
