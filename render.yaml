@@ -4,3 +4,6 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false

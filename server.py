@@ -140,5 +140,27 @@ def cleanup():
         pass
 
 
+_bot_started = False
+
+
+def _maybe_start_bot():
+    """Start the Telegram bot in a background thread when TELEGRAM_BOT_TOKEN
+    is set. Runs in the same container, talks to this app over localhost."""
+    global _bot_started
+    if _bot_started:
+        return
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    if not token:
+        return
+    _bot_started = True
+    from bot import run_bot
+
+    threading.Thread(target=run_bot, args=(token,),
+                     daemon=True, name="telegram-bot").start()
+
+
+_maybe_start_bot()
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
