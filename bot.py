@@ -73,7 +73,11 @@ async def on_choice(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         path, title = await asyncio.to_thread(_fetch_and_wait, url, kind)
     except Exception as e:  # noqa: BLE001 - surfaced to the user
-        await q.message.reply_text("Failed: %s" % str(e)[:200])
+        msg = str(e)[:200]
+        if "not a bot" in msg or "Sign in to confirm" in msg:
+            msg = ("YouTube is blocking the server right now. "
+                   "Wait a few minutes and try again.")
+        await q.message.reply_text("Failed: %s" % msg)
         return
     try:
         size = os.path.getsize(path)

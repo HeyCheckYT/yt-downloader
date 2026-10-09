@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 
-# ffmpeg is needed for mp3 extraction and mp4 merging
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+# ffmpeg is needed for mp3 extraction and mp4 merging;
+# nodejs is needed by yt-dlp's PO-token plugin to bypass YouTube bot checks
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

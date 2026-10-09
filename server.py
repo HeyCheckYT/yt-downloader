@@ -61,9 +61,10 @@ def download_job(job_id, url, kind):
             "quiet": True,
             "no_warnings": True,
             "retries": 3,
-            # mobile player clients are far less likely to be
-            # bot-blocked from datacenter IPs
-            "extractor_args": {"youtube": {"player_client": ["android", "web"]}},
+            # PO-token plugin (bgutil-ytdlp-pot-provider) + node lets the web
+            # client pass YouTube's "confirm you're not a bot" check that
+            # blocks datacenter IPs; other clients are fallbacks
+            "extractor_args": {"youtube": {"player_client": ["web", "android_vr", "tv", "android"]}},
         }
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=True)
