@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY server.py .
+COPY server.py bot.py ./
 
 # Render sets $PORT; one worker so the Telegram bot polls only once
 CMD ["sh", "-c", "gunicorn server:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 600"]
