@@ -131,6 +131,9 @@ def _fetch_and_wait(url, kind):
 
 def run_bot(token: str):
     logging.basicConfig(level=logging.WARNING)
+    # run_polling() needs a current event loop in this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     app = Application.builder().token(token).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(on_choice))
