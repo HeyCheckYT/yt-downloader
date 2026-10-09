@@ -61,10 +61,14 @@ def download_job(job_id, url, kind):
             "quiet": True,
             "no_warnings": True,
             "retries": 3,
-            # PO-token plugin (bgutil-ytdlp-pot-provider) + node lets the web
+            # PO-token plugin (bgutil-ytdlp-pot-provider) + deno lets the web
             # client pass YouTube's "confirm you're not a bot" check that
-            # blocks datacenter IPs; other clients are fallbacks
-            "extractor_args": {"youtube": {"player_client": ["web", "android_vr", "tv", "android"]}},
+            # blocks datacenter IPs; other clients are fallbacks.
+            # server_home points the plugin at the bgutil server files.
+            "extractor_args": {
+                "youtube": {"player_client": ["web", "android_vr", "tv", "android"]},
+                "youtubepot-bgutilscript": {"server_home": ["/opt/bgutil/server"]},
+            },
         }
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=True)

@@ -1,9 +1,23 @@
 FROM python:3.11-slim
 
-# ffmpeg is needed for mp3 extraction and mp4 merging;
-# nodejs is needed by yt-dlp's PO-token plugin to bypass YouTube bot checks
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg nodejs \
+# ffmpeg: needed for mp3 extraction and mp4 merging.
+# git/curl/unzip: needed to install deno and fetch the bgutil repo.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ffmpeg git curl unzip \
     && rm -rf /var/lib/apt/lists/*
+
+# deno (>= 2.4.3): JS runtime used by yt-dlp's PO-token plugin to pass
+# YouTube's "confirm you're not a bot" check on datacenter IPs.
+RUN curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/root/.deno sh
+ENV PATH="/root/.deno/bin:${PATH}"
+RUN deno --version
+
+# bgutil PO-token server files (required by the bgutil-ytdlp-pot-provider
+# pip plugin; deno resolves its npm dependencies itself).
+RUN git clone --depth 1 https://github.com/Brainicism/bgutil-ytdlp-pot-provider.git /opt/bgutil
+
+# Pre-warm deno's npm cache so the first real token request doesn't time out.
+RUN cd /opt/bgutil/server && deno run --allow-all src/generate_once.ts --version
 
 WORKDIR /app
 COPY requirements.txt .
