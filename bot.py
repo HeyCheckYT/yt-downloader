@@ -139,7 +139,9 @@ def run_bot(token: str):
     app.add_handler(CallbackQueryHandler(on_choice))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, on_link))
     log.warning("Telegram bot started")
-    app.run_polling()
+    # stop_signals=None: no signal handlers (we run in a worker thread,
+    # and signals can only be installed in the main thread)
+    app.run_polling(stop_signals=None)
 
 
 if __name__ == "__main__":
